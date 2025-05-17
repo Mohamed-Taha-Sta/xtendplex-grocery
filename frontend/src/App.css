@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f0f7ff;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .MainContent {
+    flex-direction: column;
+  }
+
+  .SidebarContainer {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .DropZonesContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .DropContainer {
+    width: 100%;
+  }
+
+  .GridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+}
