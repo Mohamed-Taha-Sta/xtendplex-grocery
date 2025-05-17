@@ -161,6 +161,36 @@ function App() {
     }
   };
 
+  const handleReorder = (dragIndex, hoverIndex) => {
+    let currentList;
+
+    switch(activeCategory) {
+      case 'fruits':
+        currentList = [...fruits];
+        const [draggedFruit] = currentList.splice(dragIndex, 1);
+        currentList.splice(hoverIndex, 0, draggedFruit);
+        setFruits(currentList);
+        break;
+      case 'vegetables':
+        currentList = [...vegetables];
+        const [draggedVegetable] = currentList.splice(dragIndex, 1);
+        currentList.splice(hoverIndex, 0, draggedVegetable);
+        setVegetables(currentList);
+        break;
+      case 'meats':
+        currentList = [...meats];
+        const [draggedMeat] = currentList.splice(dragIndex, 1);
+        currentList.splice(hoverIndex, 0, draggedMeat);
+        setMeats(currentList);
+        break;
+      default:
+        currentList = [...products];
+        const [draggedProduct] = currentList.splice(dragIndex, 1);
+        currentList.splice(hoverIndex, 0, draggedProduct);
+        setProducts(currentList);
+    }
+  };
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -241,8 +271,9 @@ function App() {
               )}
               <ProductGrid
                 products={filteredProducts}
-                isDraggable={activeCategory === 'all'}
+                isDraggable={true}
                 onRemoveFromCategory={handleRemoveFromCategory}
+                onReorder={handleReorder}
               />
             </ContentArea>
           </MainContent>
