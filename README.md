@@ -63,4 +63,3 @@ The API will be available at [http://localhost:8000](http://localhost:8000).
     *   Run the frontend: `npm start`
 
 Ensure both backend and frontend servers are running to use the application fully.
-```
