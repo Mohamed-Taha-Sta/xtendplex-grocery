@@ -2,15 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import DraggableProduct from './DraggableProduct';
 
-const ProductGrid = ({ products, isDraggable = true, onRemoveFromCategory }) => {
+const ProductGrid = ({ products, isDraggable = true, onRemoveFromCategory, onReorder }) => {
     return (
         <GridContainer>
-            {products.map(product => (
+            {products.map((product, index) => (
                 <DraggableProduct
                     key={product.id}
+                    index={index}
                     product={product}
                     isDraggable={isDraggable}
                     onRemoveFromCategory={onRemoveFromCategory}
+                    onReorder={onReorder}
                 />
             ))}
         </GridContainer>

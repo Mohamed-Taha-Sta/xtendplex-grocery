@@ -1,17 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-const DraggableProduct = ({ product, isDraggable = true, onRemoveFromCategory }) => {
+const DraggableProduct = ({ product, index, isDraggable = true, onRemoveFromCategory, onReorder }) => {
+    const ref = useRef(null);
+
     const [{ isDragging }, drag, preview] = useDrag({
         type: 'product',
-        item: { id: product.id, name: product.name, type: 'product' },
+        item: () => ({
+            id: product.id,
+            name: product.name,
+            type: 'product',
+            index
+        }),
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
         canDrag: () => isDraggable,
     });
+
+    const [{ handlerId }, drop] = useDrop({
+        accept: 'product',
+        collect(monitor) {
+            return {
+                handlerId: monitor.getHandlerId(),
+            }
+        },
+        hover(item, monitor) {
+            if (!ref.current) {
+                return;
+            }
+            const dragIndex = item.index;
+            const hoverIndex = index;
+
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+
+            const hoverBoundingRect = ref.current?.getBoundingClientRect();
+            const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+            const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
+            const clientOffset = monitor.getClientOffset();
+            const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+            const hoverClientX = clientOffset.x - hoverBoundingRect.left;
+
+            if (dragIndex < hoverIndex && (hoverClientY < hoverMiddleY || hoverClientX < hoverMiddleX)) {
+                return;
+            }
+
+            if (dragIndex > hoverIndex && (hoverClientY > hoverMiddleY || hoverClientX > hoverMiddleX)) {
+                return;
+            }
+
+            onReorder(dragIndex, hoverIndex);
+            item.index = hoverIndex;
+        },
+    });
+
+    drag(drop(ref));
 
     useEffect(() => {
         if (isDraggable) {
@@ -31,9 +78,10 @@ const DraggableProduct = ({ product, isDraggable = true, onRemoveFromCategory })
 
     return (
         <ProductCard
-            ref={isDraggable ? drag : null}
+            ref={ref}
             isDragging={isDragging}
             isDraggable={isDraggable}
+            data-handler-id={handlerId}
         >
             <ImageContainer>
                 <ProductImage src={product.image_url} alt={product.name} />
@@ -154,3 +202,4 @@ const ProductPrice = styled.div`
 `;
 
 export default DraggableProduct;
+
